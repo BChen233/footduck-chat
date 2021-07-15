@@ -41,8 +41,11 @@ export class AuthService {
     if(isHave.length) {
       return {code: RCode.FAIL, msg:'用户名重复', data: '' };
     }
-    if(!passwordVerify(user.password) || !nameVerify(user.username)) {
-      return {code: RCode.FAIL, msg:'注册校验不通过！', data: '' };
+    if(!nameVerify(user.username)) {
+      return {code: RCode.FAIL, msg:'用户名不能为空！', data: '' };
+    }
+    if(!passwordVerify(user.password)) {
+      return {code: RCode.FAIL, msg:'密码必须包含字母数字！', data: '' };
     }
     user.avatar = `api/avatar/avatar(${Math.round(Math.random()*19 +1)}).png`;
     user.role = 'user';
