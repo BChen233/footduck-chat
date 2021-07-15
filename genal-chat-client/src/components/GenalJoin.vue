@@ -35,6 +35,9 @@
           <a-button type="primary" html-type="submit" class="login-form-button">
             {{ buttonText }}
           </a-button>
+          <p type="primary" style="white-space: pre-wrap">
+            {{ ptext }}
+          </p>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -51,6 +54,7 @@ export default class GenalJoin extends Vue {
   form: any = null;
   type: string = 'login';
   buttonText: string = '登录';
+  ptext: string = '';
 
   created() {
     this.form = this.$form.createForm(this, { name: 'normal_login' });
@@ -60,10 +64,13 @@ export default class GenalJoin extends Vue {
     this.type = type;
     if (this.type === 'login') {
       this.buttonText = '登录';
+      this.ptext = '';
     } else if (this.type === 'register') {
       this.buttonText = '注册';
+      this.ptext = '注册请用用户名+学校学号注册 如 BChen20250146 \n 若不按照要求注册，除非申请，否则可能会被管理员删除账户';
     }
   }
+
 
   handleSubmit(e: any) {
     e.preventDefault();
