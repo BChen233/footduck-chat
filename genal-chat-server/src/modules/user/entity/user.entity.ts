@@ -25,4 +25,7 @@ export class User {
 
   @Column({type: 'double',default: new Date().valueOf()})
   createTime: number;
+
+  @Column({ default: '' })
+  ipAddress: string;
 }

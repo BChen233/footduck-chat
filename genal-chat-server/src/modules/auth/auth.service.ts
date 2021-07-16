@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entity/user.entity';
 import { GroupMap } from '../group/entity/group.entity'; 
-import { nameVerify, passwordVerify } from 'src/common/tool/utils';
+import { nameVerify, passwordVerify, getClientIp } from 'src/common/tool/utils';
 import { RCode } from 'src/common/constant/rcode';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class AuthService {
     };
   }
 
-  async register(user: User): Promise<any> {
+  async register(user: User, req: Request): Promise<any> {
     const isHave = await this.userRepository.find({username: user.username});
     if(isHave.length) {
       return {code: RCode.FAIL, msg:'用户名重复', data: '' };
@@ -47,8 +47,17 @@ export class AuthService {
     if(!passwordVerify(user.password)) {
       return {code: RCode.FAIL, msg:'密码必须包含字母数字！', data: '' };
     }
+
+    var ip = getClientIp(req);
+    console.log("\n--------IP地址：" + ip+ "------\n");
+    const ipRegisterCount = await this.userRepository.count({ipAddress: ip});
+    if(ipRegisterCount > 3) {
+      return {code: RCode.FAIL, msg:' 注册次数已到达上限！', data: '' };
+    }
+    
     user.avatar = `api/avatar/avatar(${Math.round(Math.random()*19 +1)}).png`;
     user.role = 'user';
+    user.ipAddress = ip;
     const newUser = await this.userRepository.save(user);
     const payload = {userId: newUser.userId, password: newUser.password};
     await this.groupUserRepository.save({
