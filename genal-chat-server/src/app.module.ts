@@ -11,8 +11,8 @@ import { AuthModule } from './modules/auth/auth.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       port: 3306,
-      username: '',
-      password: '',
+      username: 'root',
+      password: '1234',
       database: 'chat',
       charset: "utf8mb4", // 设置chatset编码为utf8mb4
       autoLoadEntities: true,

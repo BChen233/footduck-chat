@@ -65,8 +65,11 @@ export class ChatGateway {
   // 创建群组
   @SubscribeMessage('addGroup')
   async addGroup(@ConnectedSocket() client: Socket, @MessageBody() data: Group):Promise<any> {
-    const isUser = await this.userRepository.findOne({userId: data.userId});
+    const isUser = await this.userRepository.findOne({userId: data.userId, role: 'admin', status: 'on'});
     if(isUser) {
+      // 判断用户是否是管理员
+      //  select * from user where role = 'admin' and userId = '1223'
+
       const isHaveGroup = await this.groupRepository.findOne({ groupName: data.groupName });
       if (isHaveGroup) {
         this.server.to(data.userId).emit('addGroup', { code: RCode.FAIL, msg: '该群名字已存在', data: isHaveGroup });
@@ -81,7 +84,7 @@ export class ChatGateway {
       this.server.to(group.groupId).emit('addGroup', { code: RCode.OK, msg: `成功创建群${data.groupName}`, data: group });
       this.getActiveGroupUser();
     } else{
-      this.server.to(data.userId).emit('addGroup', { code: RCode.FAIL, msg: `你没资格创建群` });
+      this.server.to(data.userId).emit('addGroup', { code: RCode.FAIL, msg: `你没资格创建群,请联系管理员` });
     }
   }
 

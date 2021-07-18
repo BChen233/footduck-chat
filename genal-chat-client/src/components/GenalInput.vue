@@ -101,7 +101,7 @@ export default class GenalInput extends Vue {
    */
   throttle(fn: Function, file?: File) {
     let nowTime = +new Date();
-    if (nowTime - this.lastTime < 500) {
+    if (nowTime - this.lastTime < 1000) {
       return this.$message.error('消息发送太频繁！');
     }
     fn(file);
@@ -143,7 +143,7 @@ export default class GenalInput extends Vue {
       });
     } else {
       this.socket.emit('friendMessage', {
-        userId: this.user.userId,
+        userId: this.user.userId, 
         friendId: this.activeRoom.userId,
         content: data.message,
         width: data.width,
